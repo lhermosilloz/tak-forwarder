@@ -26,7 +26,8 @@ class TelemTAK:
         self.tak_socket = self._connect_tak()
         self.running = True
         self._run()
-                                                                                                                                                                                                def _connect_tak(self):
+        
+    def _connect_tak(self):
         while True:
             try:
                 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
