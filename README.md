@@ -68,6 +68,16 @@ After editing manually, restart the service:
 sudo systemctl restart telemtak
 ```
 
+After a successful start-up, the service status should appear as such:
+<p align="center">
+  <img src="service.png" alt="Screenshot of command line showing systemd status of telemtak.service." width="600">
+</p>
+
+On an ATAK user's end the drone should appear as this icon:
+<p align="center">
+  <img src="ATAK_screenshot.jpg" alt="Screenshot of ATAK screen with drone icon near user." width="600">
+</p>
+
 Or use the built-in config updater which prompts with current values as defaults and restarts automatically:
 ```bash
 sudo ./install.sh --config
