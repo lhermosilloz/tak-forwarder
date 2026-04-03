@@ -79,7 +79,7 @@ sudo ./install.sh --config
 
 telemTAK connects to MAVLink locally on the drone. The correct port depends on your `voxl-mavlink-server` configuration:
 
-- `udp:127.0.0.1:14551` — default secondary GCS port on Modal AI VOXL builds
+- `udp:127.0.0.1:14551` — default GCS port for this Modal AI drone
 - If that port is in use, add a dedicated output in `/etc/modalai/voxl-mavlink-server.conf` pointing to `127.0.0.1` on a free port (e.g. 14560) and restart with `voxl-restart voxl-mavlink-server`
 
 ---
