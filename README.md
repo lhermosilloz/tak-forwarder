@@ -79,9 +79,8 @@ On an ATAK user's end the drone should appear as this icon:
 </p>
 
 Video streaming (WIP)
-<p align="center">
-  ![ATAK recording](ATAK_recording.gif)
-</p>
+
+![ATAK recording](ATAK_recording.gif)
 
 Or use the built-in config updater which prompts with current values as defaults and restarts automatically:
 ```bash
