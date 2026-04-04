@@ -79,10 +79,7 @@ On an ATAK user's end the drone should appear as this icon:
 </p>
 
 Video streaming (WIP)
-<video width="640" height="360" controls>
-  <source src="ATAK_recording.mp4" type="video/mp4">
-  Your browser does not support the video tag.
-</video>
+![ATAK recording](ATAK_recording.gif)
 
 Or use the built-in config updater which prompts with current values as defaults and restarts automatically:
 ```bash
