@@ -154,7 +154,7 @@ if __name__ == '__main__':
         tak_host=cfg.get('tak', 'host', fallback='192.168.1.195'),
         tak_port=cfg.getint('tak', 'port', fallback=8088),
         uid=cfg.get('drone', 'uid', fallback='drone-001'),
-        callsign=cfg.get('drone', 'callsign', fallback='VOXL-01')
+        callsign=cfg.get('drone', 'callsign', fallback='VOXL-01'),
         stream_path=cfg.get('video', 'stream_path', fallback=None)
     )
 
