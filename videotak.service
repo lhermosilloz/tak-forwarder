@@ -3,7 +3,7 @@ Description=videoTAK - RTSP Video Forwarder to OpenTAKServer
 After=network.target
 
 [Service]
-ExecStart=/usr/local/bin/videoTAK.sh
+ExecStart=/usr/local/bin/videotak.sh
 Restart=always
 RestartSec=10
 User=root
