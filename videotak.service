@@ -1,0 +1,12 @@
+[Unit]
+Description=videoTAK - RTSP Video Forwarder to OpenTAKServer
+After=network.target
+
+[Service]
+ExecStart=/usr/local/bin/videoTAK.sh
+Restart=always
+RestartSec=10
+User=root
+
+[Install]
+WantedBy=multi-user.target

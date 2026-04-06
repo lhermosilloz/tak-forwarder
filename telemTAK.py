@@ -13,7 +13,7 @@ logging.basicConfig(
 log = logging.getLogger('telemTAK')
 
 class TelemTAK:
-    def __init__(self, connection_str, tak_host, tak_port, uid, callsign):
+    def __init__(self, connection_str, tak_host, tak_port, uid, callsign, stream_path=None):
         """Initialize TelemTAK with MAVLink and TAK server connection parameters."""
         self.running = False
         self.master = None
@@ -25,6 +25,7 @@ class TelemTAK:
         self.tak_socket = None
         self.uid = uid
         self.callsign = callsign
+        self.stream_path = stream_path
 
     def start(self):
         """Establish MAVLink and TAK connections, then begin the main loop."""
@@ -118,7 +119,12 @@ class TelemTAK:
         stale = now + timedelta(seconds=30)
         fmt = "%Y-%m-%dT%H:%M:%S.%fZ"
 
-        cot = f"""<?xml version="1.0" encoding="UTF-8"?> <event version="2.0" uid="{uid}" type="a-f-A-M-H-Q" time="{now.strftime(fmt)}" start="{now.strftime(fmt)}" stale="{stale.strftime(fmt)}" how="m-g"> <point lat="{lat}" lon="{lon}" hae="{alt}" ce="10" le="10"/> <detail> <contact callsign="{callsign}"/> <track speed="0" course="{heading}"/> <remarks>PX4 MAVLink telemetry</remarks> </detail> </event>"""
+        if self.stream_path:
+            video_block = f"""<__video><ConnectionEntry uid="{uid}-video" alias="{callsign} Camera" address="{self.tak_host}" port="8554" path="/{self.stream_path}" protocol="rtsp" type="raw" rover="false" ignoreEmbeddedKLV="false" buffer="0" timeout="0" rtspReliable="0"/></__video>"""
+        else:
+            video_block = ""
+
+        cot = f"""<?xml version="1.0" encoding="UTF-8"?> <event version="2.0" uid="{uid}" type="a-f-A-M-H-Q" time="{now.strftime(fmt)}" start="{now.strftime(fmt)}" stale="{stale.strftime(fmt)}" how="m-g"> <point lat="{lat}" lon="{lon}" hae="{alt}" ce="10" le="10"/> <detail> <contact callsign="{callsign}"/> <track speed="0" course="{heading}"/> <remarks>PX4 MAVLink telemetry</remarks> {video_block} </detail> </event>"""
 
         return cot.encode('utf-8')
 
@@ -149,6 +155,7 @@ if __name__ == '__main__':
         tak_port=cfg.getint('tak', 'port', fallback=8088),
         uid=cfg.get('drone', 'uid', fallback='drone-001'),
         callsign=cfg.get('drone', 'callsign', fallback='VOXL-01')
+        stream_path=cfg.get('video', 'stream_path', fallback=None)
     )
 
     def _handle_signal(sig, frame):
