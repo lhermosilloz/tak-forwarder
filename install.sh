@@ -1,5 +1,5 @@
 #!/bin/bash
-# telemTAK + videoTAK installer and config manager
+# telemTAK + videotak installer and config manager
 
 set -e
 
@@ -102,7 +102,7 @@ EOF
 # --- Install mode ---
 do_install() {
     echo "============================================"
-    echo "     telemTAK + videoTAK Installation       "
+    echo "     telemTAK + videotak Installation       "
     echo "============================================"
 
     echo "[*] Checking dependencies..."
@@ -130,9 +130,9 @@ do_install() {
     chmod +x "$INSTALL_DIR/telemTAK.py"
     cp telemtak.service "$TELEM_SERVICE"
 
-    echo "[*] Installing videoTAK..."
-    cp videoTAK.sh /usr/local/bin/videoTAK.sh
-    chmod +x /usr/local/bin/videoTAK.sh
+    echo "[*] Installing videotak..."
+    cp videotak.sh /usr/local/bin/videotak.sh
+    chmod +x /usr/local/bin/videotak.sh
     cp videotak.service "$VIDEO_SERVICE"
 
     systemctl daemon-reload
@@ -164,7 +164,7 @@ do_config() {
     fi
 
     echo "============================================"
-    echo "      telemTAK + videoTAK Config Update     "
+    echo "      telemTAK + videotak Config Update     "
     echo "============================================"
     echo ""
     echo "Current config:"
