@@ -108,7 +108,7 @@ do_install() {
     echo "[*] Checking dependencies..."
     if ! python3 -c "import pymavlink" &>/dev/null; then
         echo "[*] Installing pymavlink..."
-        pip3 install pymavlink
+        pip3 install "pymavlink==2.4.40"
     else
         echo "[+] pymavlink found"
     fi
