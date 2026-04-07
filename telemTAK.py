@@ -13,7 +13,7 @@ logging.basicConfig(
 log = logging.getLogger('telemTAK')
 
 class TelemTAK:
-    def __init__(self, connection_str, tak_host, tak_port, uid, callsign, stream_path=None):
+    def __init__(self, connection_str, tak_host, tak_port, uid, callsign, stream_path=None, video_user=None, video_pass=None):
         """Initialize TelemTAK with MAVLink and TAK server connection parameters."""
         self.running = False
         self.master = None
@@ -25,7 +25,9 @@ class TelemTAK:
         self.tak_socket = None
         self.uid = uid
         self.callsign = callsign
-        self.stream_path = stream_path
+        self.stream_path = stream_path  # None disables __video tag
+        self.video_user = video_user
+        self.video_pass = video_pass
 
     def start(self):
         """Establish MAVLink and TAK connections, then begin the main loop."""
@@ -93,7 +95,14 @@ class TelemTAK:
             # Rate limit CoT to 1Hz to avoid flooding OTS
             if self.latest_gps and (now - last_sent) >= 1.0:
                 send = self.latest_gps
-                cot = self.build_cot(send.lat / 1e7, send.lon / 1e7, send.alt / 1000.0, send.hdg / 100.0, self.uid, self.callsign)
+                cot = self.build_cot(
+                    send.lat / 1e7,
+                    send.lon / 1e7,
+                    send.alt / 1000.0,
+                    send.hdg / 100.0,
+                    self.uid,
+                    self.callsign
+                )
                 self.send_cot(cot)
                 last_sent = now
                 log.info(f"CoT sent | lat={send.lat/1e7:.6f} lon={send.lon/1e7:.6f} alt={send.alt/1000.0:.1f}m")
@@ -113,18 +122,35 @@ class TelemTAK:
             except Exception:
                 pass
 
-    def build_cot(self, lat, lon, alt, heading, uid="drone-1", callsign="PX4-Drone"):
+    def build_cot(self, lat, lon, alt, heading, uid, callsign):
         """Build a CoT XML event string from PX4 GPS data."""
         now = datetime.now(timezone.utc)
         stale = now + timedelta(seconds=30)
         fmt = "%Y-%m-%dT%H:%M:%S.%fZ"
 
+        # Build optional __video block if stream_path is configured
         if self.stream_path:
-            video_block = f"""<__video><ConnectionEntry uid="{uid}-video" alias="{callsign} Camera" address="{self.tak_host}" port="8554" path="/{self.stream_path}" protocol="rtsp" type="raw" rover="false" ignoreEmbeddedKLV="false" buffer="0" timeout="0" rtspReliable="0"/></__video>"""
+            video_block = f"""
+    <__video>
+      <ConnectionEntry
+        uid="{uid}-video"
+        alias="{callsign} Camera"
+        address="{self.tak_host}"
+        port="8554"
+        path="/{self.stream_path}"
+        protocol="rtsp"
+        type="raw"
+        rover="false"
+        ignoreEmbeddedKLV="false"
+        buffer="0"
+        timeout="0"
+        rtspReliable="0"
+      />
+    </__video>"""
         else:
             video_block = ""
 
-        cot = f"""<?xml version="1.0" encoding="UTF-8"?> <event version="2.0" uid="{uid}" type="a-f-A-M-H-Q" time="{now.strftime(fmt)}" start="{now.strftime(fmt)}" stale="{stale.strftime(fmt)}" how="m-g"> <point lat="{lat}" lon="{lon}" hae="{alt}" ce="10" le="10"/> <detail> <contact callsign="{callsign}"/> <track speed="0" course="{heading}"/> <remarks>PX4 MAVLink telemetry</remarks> {video_block} </detail> </event>"""
+        cot = f"""<?xml version="1.0" encoding="UTF-8"?> <event version="2.0" uid="{uid}" type="a-f-A-M-H-Q" time="{now.strftime(fmt)}" start="{now.strftime(fmt)}" stale="{stale.strftime(fmt)}" how="m-g"> <point lat="{lat}" lon="{lon}" hae="{alt}" ce="10" le="10"/> <detail> <contact callsign="{callsign}"/> <track speed="0" course="{heading}"/> <remarks>PX4 MAVLink telemetry</remarks>{video_block} </detail> </event>"""
 
         return cot.encode('utf-8')
 
@@ -155,7 +181,9 @@ if __name__ == '__main__':
         tak_port=cfg.getint('tak', 'port', fallback=8088),
         uid=cfg.get('drone', 'uid', fallback='drone-001'),
         callsign=cfg.get('drone', 'callsign', fallback='VOXL-01'),
-        stream_path=cfg.get('video', 'stream_path', fallback=None)
+        stream_path=cfg.get('video', 'stream_path', fallback=None),
+        video_user=cfg.get('video', 'username', fallback=None),
+        video_pass=cfg.get('video', 'password', fallback=None)
     )
 
     def _handle_signal(sig, frame):
