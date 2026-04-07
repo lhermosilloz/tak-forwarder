@@ -133,7 +133,6 @@ class TelemTAK:
             video_block = f"""<__video><ConnectionEntry uid="{uid}-video" alias="{callsign} Camera" address="rtsp://{self.video_user}:{self.video_pass}@{self.tak_host}:8554/{self.stream_path}" port="8554" path="/{self.stream_path}" protocol="rtsp" type="raw" rover="false" ignoreEmbeddedKLV="false" buffer="0" timeout="0" rtspReliable="1" user="{self.video_user}" password="{self.video_pass}" url="rtsp://{self.video_user}:{self.video_pass}@{self.tak_host}:8554/{self.stream_path}"/></__video>"""
             # All this needed was the P2P # video_block = f"""<__video><ConnectionEntry uid="{uid}-video" alias="{callsign} Camera" address="rtsp://{self.video_user}:{self.video_pass}@{self.tak_host}:8554/{self.stream_path}" port="8554" path="/{self.stream_path}" protocol="rtsp" type="raw" rover="false" ignoreEmbeddedKLV="false" buffer="0" timeout="0" rtspReliable="0"/></__video>"""
         else:
-        else:
             video_block = ""
 
         cot = f"""<?xml version="1.0" encoding="UTF-8"?> <event version="2.0" uid="{uid}" type="a-f-A-M-H-Q" time="{now.strftime(fmt)}" start="{now.strftime(fmt)}" stale="{stale.strftime(fmt)}" how="m-g"> <point lat="{lat}" lon="{lon}" hae="{alt}" ce="10" le="10"/> <detail> <contact callsign="{callsign}"/> <track speed="0" course="{heading}"/> <remarks>PX4 MAVLink telemetry</remarks>{video_block} </detail> </event>"""
