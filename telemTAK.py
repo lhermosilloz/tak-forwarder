@@ -130,7 +130,7 @@ class TelemTAK:
 
         # Build optional __video block if stream_path is configured
         if self.stream_path:
-            video_block = f"""<__video><ConnectionEntry uid="{uid}" alias="{callsign} Camera" address="{self.tak_host}" port="8554" path="{self.stream_path}" protocol="rtsp" type="raw" roverPort="-1" ignoreEmbeddedKLV="false" bufferTime="-1" networkTimeout="10000" rtspReliable="1" user="{self.video_user}" password="{self.video_pass}"/></__video>"""
+            video_block = f"""<__video><ConnectionEntry uid="{uid}-video" alias="{callsign} Camera" address="{self.tak_host}" port="8554" path="{self.stream_path}" protocol="rtsp" type="raw" roverPort="-1" ignoreEmbeddedKLV="false" bufferTime="-1" networkTimeout="10000" rtspReliable="1" user="{self.video_user}" password="{self.video_pass}"/></__video>"""
             # video_block = f"""<__video><ConnectionEntry uid="{uid}" alias="{callsign} Camera" address="{self.tak_host}" port="8554" path="/{self.stream_path}" protocol="rtsp" type="raw" roverPort="-1" ignoreEmbeddedKLV="false" bufferTime="-1" networkTimeout="10000" rtspReliable="1"/></__video>"""
         else:
             video_block = ""
